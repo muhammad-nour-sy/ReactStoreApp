@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
+import AllProductGrid from "./components/AllProductGrid";
+import AllProductsList from "./components/AllProductsList";
+import CategoryGrid from "./components/CategoryGrid";
+import Home from "./components/Home";
+import Navbar from "./components/Navbar/Navbar";
+import ProductDetails from "./components/ProductDetails";
+import { useCategoriesContext } from "./useCategories";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const { categories, isPending, error } = useCategoriesContext();
+    console.log(categories);
+    return (
+        <div className="App">
+            <header className="App-header">
+                <Router>
+                    <Navbar />
+                    <div className="App">
+                        {/* <Navbar /> */}
+                        <div className="content">
+                            <Switch>
+                                <Route exact path="/">
+                                    <Home />
+                                </Route>
+                                <Route path="/allproducts">
+                                    <AllProductGrid />
+                                </Route>
+                                <Route path="/productslist">
+                                    <AllProductsList />
+                                </Route>
+                                {categories &&
+                                    categories.map((category, i) => (
+                                        <Route key={i} path={category.path}>
+                                            <CategoryGrid
+                                                category={category.name}
+                                            />
+                                        </Route>
+                                    ))}
+                                <Route path="/products/:id">
+                                    <ProductDetails />
+                                </Route>
+                                {/* <Route path="*">
+                                    <Home />
+                                </Route> */}
+                               
+                            </Switch>
+                        </div>
+                    </div>
+                </Router>
+            </header>
+        </div>
+    );
 }
 
 export default App;
